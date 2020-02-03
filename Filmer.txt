@@ -1,0 +1,250 @@
+Titel: The Shawshank Redemption
+Genre: Drama
+IMDb rating: 9.3
+Längd: 2h & 22min
+_______________________________________________
+Titel: The Godfather
+Genre: Drama
+IMDb rating: 9.2
+Längd: 2h & 55min
+_______________________________________________
+Titel: The Dark Knight
+Genre: Action
+IMDb rating: 9.0
+Längd: 2h & 32min
+_______________________________________________
+Titel: Schindler's List
+Genre: Biography
+IMDb rating: 8.9
+Längd: 3h & 15min
+_______________________________________________
+Titel: Pulp Fiction
+Genre: Crime
+IMDb rating: 8.9
+Längd: 2h & 34min
+_______________________________________________
+Titel: Fight Club
+Genre: Drama
+IMDb rating: 8.8
+Längd: 2h & 19min
+_______________________________________________
+Titel: Forrest Gump
+Genre: Drama
+IMDb rating: 8.8
+Längd: 2h & 22min
+_______________________________________________
+Titel: Inception
+Genre: Action
+IMDb rating: 8.8
+Längd: 2h & 28min
+_______________________________________________
+Titel: The Matrix
+Genre: Action
+IMDb rating: 8.7
+Längd: 2h & 16min
+_______________________________________________
+Titel: Goodfellas
+Genre: Crime
+IMDb rating: 8.7
+Längd: 2h & 26min
+_______________________________________________
+Titel: Seven
+Genre: Crime
+IMDb rating: 8.6
+Längd: 2h & 7min
+_______________________________________________
+Titel: The Green Mile
+Genre: Drama
+IMDb rating: 8.6
+Längd: 3h & 9min
+_______________________________________________
+Titel: Interstellar
+Genre: Adventure
+IMDb rating: 8.6
+Längd: 2h & 49min
+_______________________________________________
+Titel: Léon
+Genre: Action
+IMDb rating: 8.5
+Längd: 1h & 50min
+_______________________________________________
+Titel: The Usual Suspects
+Genre: Crime
+IMDb rating: 8.5
+Längd: 1h & 46 min
+_______________________________________________
+Titel: American History X
+Genre: Drama
+IMDb rating: 8.5
+Längd: 1h & 59min
+_______________________________________________
+Titel: Gladiator
+Genre: Action
+IMDb rating: 8.5
+Längd: 2h & 35min
+_______________________________________________
+Titel: The Departed
+Genre: Crime
+IMDb rating: 8.5
+Längd: 2h & 31min
+_______________________________________________
+Titel: Whiplash
+Genre: Drama
+IMDb rating: 8.5
+Längd: 1h & 46min
+_______________________________________________
+Titel: The Prestige
+Genre: Drama
+IMDb rating: 8.5
+Längd: 2h & 10min
+_______________________________________________
+Titel: Django Unchained
+Genre: Drama
+IMDb rating: 8.4
+Längd: 2h & 45min
+_______________________________________________
+Titel: The Shining
+Genre: Horror
+IMDb rating: 8.4
+Längd: 2h & 26min
+_______________________________________________
+Titel: Wall-E
+Genre: Animation
+IMDb rating: 8.4
+Längd: 1h & 38min
+_______________________________________________
+Titel: Reservoir Dogs
+Genre: Crime
+IMDb rating: 8.3
+Längd: 1h & 39min
+_______________________________________________
+Titel: Inglourious Basterds
+Genre: War
+IMDb rating: 8.3
+Längd: 2h & 33min
+_______________________________________________
+Titel: Good Will Hunting
+Genre: Drama
+IMDb rating: 8.3
+Längd: 2h & 6min
+_______________________________________________
+Titel: A Space Odyssey
+Genre: Adventure
+IMDb rating: 8.3
+Längd: 2h & 29min
+_______________________________________________
+Titel: Full Metal Jacket
+Genre: War
+IMDb rating: 8.3
+Längd: 1h & 56min
+_______________________________________________
+Titel: Scarface
+Genre: Crime
+IMDb rating: 8.3
+Längd: 2h & 50min
+_______________________________________________
+Titel: Up
+Genre: Animation
+IMDb rating: 8.2
+Längd: 1h & 36min
+_______________________________________________
+Titel: Green Book
+Genre: Biography
+IMDb rating: 8.2
+Längd: 2h & 10min
+_______________________________________________
+Titel: The Wolf of Wall Street
+Genre: Biography
+IMDb rating: 8.2
+Längd: 3h
+_______________________________________________
+Titel: Warrior
+Genre: Drama
+IMDb rating: 8.2
+Längd: 2h & 10min
+_______________________________________________
+Titel: No Country for Old Men
+Genre: Crime
+IMDb rating: 8.1
+Längd: 2h & 2min
+_______________________________________________
+Titel: Jurassic Park
+Genre: Action
+IMDb rating: 8.1
+Längd: 2h & 7min
+_______________________________________________
+Titel: Gone Girl
+Genre: Drama
+IMDb rating: 8.1
+Längd: 2h & 29min
+_______________________________________________
+Titel: Catch Me If You Can
+Genre: Biography
+IMDb rating: 8.1
+Längd: 2h & 21min
+_______________________________________________
+Titel: Prisoners
+Genre: Crime
+IMDb rating: 8.1
+Längd: 2h & 33min
+_______________________________________________
+Titel: 12 Years a Slave
+Genre: Biography
+IMDb rating: 8.1
+Längd: 2h & 14min
+_______________________________________________
+Titel: Million Dollar Baby
+Genre: Drama
+IMDb rating: 8.1
+Längd: 2h & 12min
+_______________________________________________
+Titel: Rocky
+Genre: Drama
+IMDb rating: 8.1
+Längd: 2h
+_______________________________________________
+Titel: The Terminator
+Genre: Action
+IMDb rating: 8.0
+Längd: 1h & 47min
+_______________________________________________
+Titel: Saving Private Ryan
+Genre: War
+IMDb rating: 8.6
+Längd: 2h & 49min
+_______________________________________________
+Titel: The Fellowship of the Ring
+Genre: Adventure
+IMDb rating: 8.8
+Längd: 2h & 58min
+_______________________________________________
+Titel: The Two Towers
+Genre: Adventure
+IMDb rating: 8.7
+Längd: 2h & 59min
+_______________________________________________
+Titel: The Return of the King
+Genre: Adventure
+IMDb rating: 8.9
+Längd: 3h & 21min
+_______________________________________________
+Titel: Tropic Thunder
+Genre: Comedy
+IMDb rating: 7.0
+Längd: 1h & 47min
+_______________________________________________
+Titel: Ready Player One
+Genre: Action
+IMDb rating: 7.5
+Längd: 2h & 20min
+_______________________________________________
+Titel: A Star Is Born
+Genre: Drama
+IMDb rating: 7.7
+Längd: 2h & 16min
+_______________________________________________
+Titel: Bohemian Rhapsody
+Genre: Biography
+IMDb rating: 8.0
+Längd: 2h & 14min
+_______________________________________________
