@@ -22,7 +22,7 @@ namespace FilmRegister
         static void Main(string[] args)
         {
             bool playing = true;
-            Movie[] movieList = new Movie[1];
+            Movie[] movieList = new Movie[0];
 
             int row = 0;
             int rowMax = 3;
@@ -31,30 +31,37 @@ namespace FilmRegister
             int columnMax = 1;
 
             int spacingTitle = 14;
-            int spacingGenre = 14;
+            int spacingOther = 14;
+
+
+            string text = " Title, Genre, Rating, Length";
+            string[] textSplit = text.Split(",");
 
             while (playing)
             {
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.CursorVisible = false;
                 Console.SetCursorPosition(0, 0);
-                Console.WriteLine("1. Add movie, 2. Remove movie");
+                Console.WriteLine("[1. Add movie] [2. Remove movie]");
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                string text = " Title -  Genre -  Rating -  Length";
-                string[] textSplit = text.Split(" - ");
+
+                for (int i = 0; i < textSplit.Length; i++)
+                {
+                    textSplit[i] = textSplit[i].Replace('>', ' ');
+                }
                 textSplit[row] = textSplit[row].Replace(' ', '>');
-                //text = String.Join(" - ", textSplit);
+
                 Console.SetCursorPosition(0, 2);
-                string test = string.Format("{0," + (-spacingTitle) + "}" + "{1," + (-spacingGenre) + "}" + "{2," + -spacingGenre + "}" + "{3," + -spacingGenre + "}", textSplit[0], textSplit[1], textSplit[2], textSplit[3]);
+                string test = string.Format("{0," + (-spacingTitle) + "}" + "{1," + (-spacingOther) + "}" + "{2," + -spacingOther + "}" + "{3}", textSplit[0], textSplit[1], textSplit[2], textSplit[3]);
                 Console.WriteLine(test);
 
                 Console.ForegroundColor = ConsoleColor.White;
+
                 for (int i = 0; i < movieList.Length; i++) //Write the full list of movies
                 {
                     if (movieList[i] != null)
-                        //Console.WriteLine(movieList[i].m_Title + " " + movieList[i].m_Genre + " " + movieList[i].m_Rating + " " + movieList[i].m_Length);
-                        Console.WriteLine(" {0," + -spacingTitle + "}" + "{1," + -spacingGenre + "}" + "{2," + -spacingGenre + "}" + "{3," + -spacingGenre + "}", movieList[i].m_Title, movieList[i].m_Genre, movieList[i].m_Rating, movieList[i].m_Length);
+                        Console.WriteLine(" {0," + -spacingTitle + "}" + "{1," + -spacingOther + "}" + "{2," + -spacingOther + "}" + "{3:0}h{4:00}m", movieList[i].m_Title, movieList[i].m_Genre, movieList[i].m_Rating, movieList[i].m_Length / 60, movieList[i].m_Length % 60);
                 }
 
                 ConsoleKey consoleKey = Console.ReadKey().Key;
@@ -70,46 +77,75 @@ namespace FilmRegister
                     if (row < 0)
                         row = rowMax;
                 }
-                else if (consoleKey == ConsoleKey.UpArrow)
-                {
-                    column++;
-                    if (column > columnMax)
-                        column = 0;
-                }
-                else if (consoleKey == ConsoleKey.DownArrow)
-                {
-                    column--;
-                    if (column < 0)
-                        column = columnMax;
-                }
                 else if (consoleKey == ConsoleKey.D1)
                 {
                     Console.Clear();
+                    
+                    Console.WriteLine(string.Format("{0," + (-spacingTitle) + "}" + "{1," + (-spacingOther) + "}" + "{2," + -spacingOther + "}" + "{3}", "Title", "Genre", "Rating", "Length"));
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.CursorVisible = true;
 
-                    Console.Write("Titel: ");
-                    string title = Console.ReadLine();
+                    string title = Console.ReadLine();//Set title
                     if(title.Length > spacingTitle)
                     {
                         spacingTitle = title.Length + 2;
+                        Console.SetCursorPosition(0, 0);
+                        Console.WriteLine(string.Format("{0," + (-spacingTitle) + "}" + "{1," + (-spacingOther) + "}" + "{2," + -spacingOther + "}" + "{3}", "Title", "Genre", "Rating", "Length"));//Update header if the title is too long.
                     }
 
-                    Console.Write("\nGenre: ");
                     string[] genreList = Enum.GetNames(typeof(Genres));
+                    
 
-                    for (int i = 0; i < genreList.Length; i++)
+                    bool chosingGenre = true;
+                    Genres genre = default;
+                    int selection = 0;
+                    Console.CursorVisible = false;
+                    while (chosingGenre)
                     {
-                        Console.WriteLine(i + ": " + genreList[i]);
-                    }
+                        for (int i = 0; i < genreList.Length; i++)//Display all possible genres to chose from
+                        {
+                            Console.SetCursorPosition(spacingTitle - 1, 1 + i);
+                            if (i == selection)
+                                Console.WriteLine(">" + genreList[i]);
+                            else
+                                Console.WriteLine(" " + genreList[i]);
 
-                    Console.Write("\nRating: ");
-                    double rating = Convert.ToDouble(Console.ReadLine());
+                        }
+
+                        consoleKey = Console.ReadKey().Key;
+
+                        if(consoleKey == ConsoleKey.UpArrow)
+                        {
+                            selection--;
+                        }
+                        else if (consoleKey == ConsoleKey.DownArrow)
+                        {
+                            selection++;
+                        }
+                        else if(consoleKey == ConsoleKey.Enter)
+                        {
+                            genre = (Genres)selection;
+                            chosingGenre = false;
+                            Console.SetCursorPosition(spacingTitle, 1);
+                            Console.Write(genre);
+
+                            for (int i = 0; i < genreList.Length - 1; i++)
+                            {
+                                Console.SetCursorPosition(spacingTitle - 1, 2 + i);
+                                Console.Write(new string(' ', spacingOther));
+                            }
+                            Console.SetCursorPosition(spacingTitle + spacingOther, 1);
+                            Console.CursorVisible = true;
+                        }
+                    }
+                    
+
+                    double rating = GetInputDouble(0, 10);
 
                     Console.Write("Length: ");
                     double length = Convert.ToDouble(Console.ReadLine());
 
-                    Movie newMovie = new Movie(title, Genres.Action, rating, length);
+                    Movie newMovie = new Movie(title, genre, rating, length);
                     movieList = AddMovie(newMovie, movieList);
                     Console.Clear();
                 }
@@ -123,16 +159,57 @@ namespace FilmRegister
         {
             
         }
+
+        /// <summary>
+        /// Reads and parses input from user.
+        /// Displays error messages relevant to the error the user made. 
+        /// Returns parsed double.
+        /// </summary>
+        /// <param name="min">Minimum value</param>
+        /// <param name="max">Maximum value</param>
+        /// <returns></returns>
+        public static double GetInputDouble(int min, int max)
+        {
+            bool tryParse = false;
+            double output = 0;
+            while (!tryParse)
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                tryParse = double.TryParse(Console.ReadLine().Replace('.', ','), out output);
+
+                if (!tryParse)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.SetCursorPosition(0, 3);
+                    Console.WriteLine("Error: input numbers only.");
+                }
+
+                if(output > max || output < min)
+                {
+                    tryParse = false;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Error: input not in range {0} - {1}.", min, max);
+                }
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// Adds movie to an array. If the current array doesn't have enough space, a new array is created and replaces the old one.
+        /// </summary>
+        /// <param name="movieToAdd">Object to add.</param>
+        /// <param name="list">Array object gets added to.</param>
+        /// <returns>List with added object.</returns>
         public static Movie[] AddMovie(Movie movieToAdd, Movie[] list)
         {
             for (int i = 0; i < list.Length; i++)
             {
-                if(list[i] == null)
+                if (list[i] == null)
                 {
                     list[i] = movieToAdd;
                     return list;
                 }
-                else if(i == list.Length - 1)
+                else if (i == list.Length - 1)
                 {
                     Movie[] newMovieList = new Movie[list.Length + 1];
                     for (int j = 0; j < list.Length; j++)
@@ -143,7 +220,9 @@ namespace FilmRegister
                     return newMovieList;
                 }
             }
-            return list;
+            Movie[] newList = new Movie[1];//If the list is initially set to 0 length, create new list and add new movie, return the new list.
+            newList[0] = movieToAdd;
+            return newList;
         }
     }
 }
