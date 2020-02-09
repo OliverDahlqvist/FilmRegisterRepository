@@ -35,6 +35,11 @@ namespace FilmRegister
                         rangeValue = rangeMax;
                 }
             }
+            public int MaxValue
+            {
+                get { return rangeMax; }
+                set { rangeMax = value; }
+            }
             public IntRange(int value, int valueMax)
             {
                 rangeValue = value;
@@ -55,7 +60,7 @@ namespace FilmRegister
             int spacingOther = 14;
 
 
-            string text = " Title, Genre, Rating, Length";
+            string text = " Title, Genre, Rating, Length, [Done]";
             string[] textSplit = text.Split(",");
 
             ConsoleKey consoleKey;
@@ -70,7 +75,7 @@ namespace FilmRegister
                 Console.ForegroundColor = ConsoleColor.Yellow;
 
 
-                SetupTitles();
+                SetupCategories();
 
                 Console.SetCursorPosition(0, 2);
                 string test = string.Format("{0," + (-spacingTitle) + "}" + "{1," + (-spacingOther) + "}" + "{2," + -spacingOther + "}" + "{3}", textSplit[0], textSplit[1], textSplit[2], textSplit[3]);
@@ -96,18 +101,98 @@ namespace FilmRegister
                 else if (consoleKey == ConsoleKey.D1)
                 {
                     Console.Clear();
+                    
                     bool addingMovie = true;
                     selection.Value = 0;
+
+                    string title = "";
+                    Genres genre = default;
+                    double rating = 0;
+                    double length = 0;
+
+                    string[] userInputs = new string[4] { "", "", "", ""};//Used to store all keystrokes from corresponding selection
+                    bool[] inputsCorrect = new bool[userInputs.Length];
+
+                    
                     while (addingMovie)
                     {
-                        SetupTitles();
-                        
-                        for (int i = 0; i < textSplit.Length; i++)
+                        Console.CursorVisible = false;
+                        selection.MaxValue = 4;
+                        SetupCategories();
+
+                        Console.SetCursorPosition(0, 10);
+                        Console.Write(new string(' ', Console.WindowWidth));
+                        switch (selection.Value)//Depending on the current selection check for errors and display them in the console.
+                        {
+                            case 0:
+                                inputsCorrect[selection.Value] = true;
+                                break;
+                            case 1:
+                                inputsCorrect[selection.Value] = true;
+                                break;
+                            case 2:
+                                //rating = TryParseDouble(userInputs[selection.Value], 0, 10, 0, 10, true);
+                                bool tryParse = double.TryParse(userInputs[selection.Value].Replace('.', ','), out rating);
+                                inputsCorrect[2] = tryParse;
+                                Console.SetCursorPosition(0, 10);
+                                if (!tryParse && userInputs[selection.Value].Length > 0)
+                                {
+                                    Console.Write("Input numbers only");
+                                }
+                                else if (rating > 10)
+                                {
+                                    Console.Write("Pick between 0-10");
+                                }
+
+                                break;
+                            case 3:
+                                //length = TryParseDouble(userInputs[selection.Value], 0, 0, 0, 10);
+                                bool tryParse1 = double.TryParse(userInputs[selection.Value], out length);
+                                inputsCorrect[3] = tryParse1;
+                                Console.SetCursorPosition(0, 10);
+                                if (!tryParse1 && userInputs[selection.Value].Length > 0)
+                                {
+                                    Console.Write("Input numbers only");
+                                }
+
+                                break;
+                            default:
+                                break;
+                        }
+
+                        for (int i = 0; i < textSplit.Length - 1; i++)//Write all except the last menu item
                         {
                             Console.SetCursorPosition(0, i);
+                            if (inputsCorrect[i])
+                                Console.ForegroundColor = ConsoleColor.White;
+                            else
+                                Console.ForegroundColor = ConsoleColor.Red;
+
                             Console.WriteLine(textSplit[i] + ":");
                         }
-                        consoleKey = Console.ReadKey().Key;
+                        if (CheckBools(inputsCorrect))
+                            Console.ForegroundColor = ConsoleColor.Green;
+                        else
+                            Console.ForegroundColor = ConsoleColor.Red;
+
+                        Console.WriteLine("\n" + textSplit[textSplit.Length - 1]);//Write last menu item which is special
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        if (userInputs.Length > selection.Value)//Check if the array is longer than the selection to avoid index out of range, else just hide the cursor
+                        {
+                            Console.CursorVisible = true;
+                            Console.SetCursorPosition(textSplit[selection.Value].Length + 2 + userInputs[selection.Value].Length, selection.Value);
+                        }
+                        else
+                        {
+                            Console.CursorVisible = false;
+                            Console.SetCursorPosition(0, selection.Value + 1);
+                        }
+
+
+                        ConsoleKeyInfo consoleKeyInfo = Console.ReadKey();
+                        consoleKey = consoleKeyInfo.Key;
+
                         if (consoleKey == ConsoleKey.DownArrow)
                         {
                             selection.Value++;
@@ -116,73 +201,27 @@ namespace FilmRegister
                         {
                             selection.Value--;
                         }
-
-                    }
-
-                    Console.ReadLine();
-
-
-
-                    /*//Console.WriteLine(string.Format("{0," + (-spacingTitle) + "}" + "{1," + (-spacingOther) + "}" + "{2," + -spacingOther + "}" + "{3}", "Title", "Genre", "Rating", "Length"));
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.CursorVisible = true;
-
-                    string title = Console.ReadLine();//Set title
-                    if(title.Length > spacingTitle)
-                    {
-                        spacingTitle = title.Length + 2;
-                        Console.SetCursorPosition(0, 0);
-                        Console.WriteLine(string.Format("{0," + (-spacingTitle) + "}" + "{1," + (-spacingOther) + "}" + "{2," + -spacingOther + "}" + "{3}", "Title", "Genre", "Rating", "Length"));//Update header if the title is too long.
-                    }
-
-                    string[] genreList = Enum.GetNames(typeof(Genres));
-                    
-
-                    bool chosingGenre = true;
-                    Genres genre = default;
-                    int selection = 0;
-                    Console.CursorVisible = false;
-                    while (chosingGenre)
-                    {
-                        for (int i = 0; i < genreList.Length; i++)//Display all possible genres to chose from
-                        {
-                            Console.SetCursorPosition(spacingTitle - 1, 1 + i);
-                            if (i == selection)
-                                Console.WriteLine(">" + genreList[i]);
-                            else
-                                Console.WriteLine(" " + genreList[i]);
-
-                        }
-
-                        consoleKey = Console.ReadKey().Key;
-
-                        if(consoleKey == ConsoleKey.UpArrow)
-                        {
-                            selection--;
-                        }
-                        else if (consoleKey == ConsoleKey.DownArrow)
-                        {
-                            selection++;
-                        }
                         else if(consoleKey == ConsoleKey.Enter)
                         {
-                            genre = (Genres)selection;
-                            chosingGenre = false;
-                            Console.SetCursorPosition(spacingTitle, 1);
-                            Console.Write(genre);
-
-                            for (int i = 0; i < genreList.Length - 1; i++)
-                            {
-                                Console.SetCursorPosition(spacingTitle - 1, 2 + i);
-                                Console.Write(new string(' ', spacingOther));
-                            }
-                            Console.SetCursorPosition(spacingTitle + spacingOther, 1);
-                            Console.CursorVisible = true;
+                            selection.Value++;
                         }
-                    }
-                    
+                        else
+                        {
+                            if (consoleKey == ConsoleKey.Backspace && userInputs[selection.Value].Length > 0)
+                            {
+                                userInputs[selection.Value] = userInputs[selection.Value].Remove(userInputs[selection.Value].Length - 1);
+                                Console.SetCursorPosition(textSplit[selection.Value].Length + 2 + userInputs[selection.Value].Length, selection.Value);
+                                Console.Write(" ");
+                            }
+                            else if(consoleKey != ConsoleKey.Backspace)
+                                userInputs[selection.Value] += consoleKeyInfo.KeyChar;//Måste fixa så att den kollar om tangenten man slår in faktiskt är en karaktär som kan användas. T.ex. F1
+                            
+                        }
+                        
 
-                    double rating = GetInputDouble(0, 10);
+                    }
+
+                    /*double rating = GetInputDouble(0, 10);
 
                     Console.Write("Length: ");
                     double length = Convert.ToDouble(Console.ReadLine());
@@ -196,7 +235,7 @@ namespace FilmRegister
 
                 }
             }
-            void SetupTitles()
+            void SetupCategories()
             {
                 for (int i = 0; i < textSplit.Length; i++)
                 {
@@ -205,37 +244,54 @@ namespace FilmRegister
                 textSplit[selection.Value] = textSplit[selection.Value].Replace(' ', '>');
             }
         }
+
+        public static bool CheckBools(bool[] bools)
+        {
+            for (int i = 0; i < bools.Length; i++)
+            {
+                if (!bools[i])
+                    return false;
+            }
+            return true;
+        }
+
         /// <summary>
-        /// Reads and parses input from user.
+        /// Reads and parses input from user. ÄNDRA
         /// Displays error messages relevant to the error the user made. 
         /// Returns parsed double.
         /// </summary>
         /// <param name="min">Minimum value</param>
         /// <param name="max">Maximum value</param>
         /// <returns></returns>
-        public static double GetInputDouble(int min, int max)
+        public static double TryParseDouble(string input, int min, int max, int cursorX, int cursorY, bool replace = false)
         {
+            
             bool tryParse = false;
             double output = 0;
-            while (!tryParse)
+            if(replace)
+                tryParse = double.TryParse(input.Replace('.', ','), out output);
+            else
+                tryParse = double.TryParse(Console.ReadLine(), out output);
+
+            Console.SetCursorPosition(cursorX, cursorY);
+            if (!tryParse && input.Length > 0)
             {
-                Console.ForegroundColor = ConsoleColor.White;
-                tryParse = double.TryParse(Console.ReadLine().Replace('.', ','), out output);
-
-                if (!tryParse)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.SetCursorPosition(0, 3);
-                    Console.WriteLine("Error: input numbers only.");
-                }
-
-                if(output > max || output < min)
-                {
-                    tryParse = false;
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Error: input not in range {0} - {1}.", min, max);
-                }
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("Error: input numbers only.");
+                output = 0;
             }
+            else if(max > 0 && (output > max || output < min))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write(new string(' ', Console.WindowWidth));
+                Console.Write("Error: input not in range {0} - {1}.", min, max);
+                output = 0;
+            }
+            else
+            {
+                Console.Write(new string(' ', Console.WindowWidth));
+            }
+            Console.ForegroundColor = ConsoleColor.White;
             return output;
         }
         /// <summary>
