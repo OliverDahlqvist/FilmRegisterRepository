@@ -126,6 +126,7 @@ namespace FilmRegister
                         {
                             case 0:
                                 inputsCorrect[selection.Value] = true;
+                                title = userInputs[0];
                                 break;
                             case 1:
                                 inputsCorrect[selection.Value] = true;
@@ -203,6 +204,17 @@ namespace FilmRegister
                         }
                         else if(consoleKey == ConsoleKey.Enter)
                         {
+                            if(selection.Value == selection.MaxValue)
+                            {
+                                addingMovie = false;
+                                Movie newMovie = new Movie(title, genre, rating, length);
+                                movieList = AddMovie(newMovie, movieList);
+                                if(title.Length > spacingTitle)
+                                {
+                                    spacingTitle = title.Length + 2;
+                                }
+                                Console.Clear();
+                            }
                             selection.Value++;
                         }
                         else
@@ -225,10 +237,8 @@ namespace FilmRegister
 
                     Console.Write("Length: ");
                     double length = Convert.ToDouble(Console.ReadLine());
-
-                    Movie newMovie = new Movie(title, genre, rating, length);
-                    movieList = AddMovie(newMovie, movieList);
-                    Console.Clear();*/
+                    */
+                    
                 }
                 else if (consoleKey == ConsoleKey.D2)
                 {
