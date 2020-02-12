@@ -50,11 +50,11 @@ namespace FilmRegister
         }
         static void Main(string[] args)
         {
+
+
             bool playing = true;
             Movie[] movieList = new Movie[0];
-
             IntRange selection = new IntRange(0, 4);
-
             int column = 0;
             int columnMax = 1;
 
@@ -67,6 +67,8 @@ namespace FilmRegister
             string[] textSplit = text.Split(",");
 
             ConsoleKey consoleKey;
+            Genres testGenre = Genres.Crime;
+
 
             while (playing)
             {
@@ -95,7 +97,7 @@ namespace FilmRegister
                         {
                             movieSeen = "x";
                         }
-                        Console.WriteLine(" {0," + -spacingTitle + "}" + "{1," + -spacingOther + "}" + "{2," + -spacingOther + "}" + "{3:0}h{4:00}m" + "{5}",
+                        Console.WriteLine(" {0," + -spacingTitle + "}" + "{1," + -spacingOther + "}" + "{2," + -spacingOther + "}" + "{3:0}h{4:00}m" + "{5}", 
                             movieList[i].m_Title, movieList[i].m_Genre, movieList[i].m_Rating, movieList[i].m_Length / 60, movieList[i].m_Length % 60, movieSeen);
                     }
                 }
