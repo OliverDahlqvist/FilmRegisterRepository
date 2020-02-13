@@ -4,23 +4,6 @@ namespace FilmRegister
 {
     class Program
     {
-        public enum Genres { Action, Adventure, Animation, Biography, Crime, Drama, Horror, War}
-        public class Movie
-        {
-            public string m_Title;
-            public Genres m_Genre;
-            public double m_Rating;
-            public double m_Length;
-            public bool m_Seen;
-            public Movie(string title, Genres genre, double rating, double length, bool seen)
-            {
-                m_Title = title;
-                m_Genre = genre;
-                m_Rating = rating;
-                m_Length = length;
-                m_Seen = seen;
-            }
-        }
         public class IntRange
         {
             private int rangeValue;
@@ -50,8 +33,6 @@ namespace FilmRegister
         }
         static void Main(string[] args)
         {
-
-
             bool playing = true;
             Movie[] movieList = new Movie[0];
             IntRange selection = new IntRange(0, 4);
@@ -67,8 +48,6 @@ namespace FilmRegister
             string[] textSplit = text.Split(",");
 
             ConsoleKey consoleKey;
-            Genres testGenre = Genres.Crime;
-
 
             while (playing)
             {
@@ -310,8 +289,7 @@ namespace FilmRegister
                 if (!bools[i])
                     return false;
             }
-            return true;
-        }
+            return true;        }
 
         /// <summary>
         /// Reads and parses input from user. ÄNDRA
@@ -381,6 +359,11 @@ namespace FilmRegister
             Movie[] newList = new Movie[1];//If the list is initially set to 0 length, create new list and add new movie, return the new list.
             newList[0] = movieToAdd;
             return newList;
+        }
+
+        public static void SortList()//Kan byta från void till något annat, lägg in funktionen på rad 
+        {
+
         }
     }
 }
