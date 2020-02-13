@@ -330,9 +330,7 @@ namespace FilmRegister
             return true;        }
 
         /// <summary>
-        /// Reads and parses input from user. ÄNDRA
-        /// Displays error messages relevant to the error the user made. 
-        /// Returns parsed double.
+        /// Reads and parses input from user. ÄNDRA. Displays error messages relevant to the error the user made. Returns parsed double.
         /// </summary>
         /// <param name="min">Minimum value</param>
         /// <param name="max">Maximum value</param>
