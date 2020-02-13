@@ -209,7 +209,7 @@ namespace FilmRegister
                                 addingMovie = false;
                                 Movie newMovie = new Movie(title, genre, rating, length);
                                 movieList = AddMovie(newMovie, movieList);
-                                if(title.Length > spacingTitle)
+                                if(title.Length > spacingTitle)//Check if the title of the movie is longer than current spacing value, if the title is longer set the spacing value to the title length + 2
                                 {
                                     spacingTitle = title.Length + 2;
                                 }
@@ -229,16 +229,7 @@ namespace FilmRegister
                                 userInputs[selection.Value] += consoleKeyInfo.KeyChar;//Måste fixa så att den kollar om tangenten man slår in faktiskt är en karaktär som kan användas. T.ex. F1
                             
                         }
-                        
-
                     }
-
-                    /*double rating = GetInputDouble(0, 10);
-
-                    Console.Write("Length: ");
-                    double length = Convert.ToDouble(Console.ReadLine());
-                    */
-                    
                 }
                 else if (consoleKey == ConsoleKey.D2)
                 {
