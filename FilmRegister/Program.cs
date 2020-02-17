@@ -5,33 +5,6 @@ namespace FilmRegister
 {
     class Program
     {
-        public class IntRange
-        {
-            private int rangeValue;
-            private int rangeMax;
-            public int Value
-            {
-                get { return rangeValue; }
-                set
-                {
-                    rangeValue = value;
-                    if (rangeValue > rangeMax)
-                        rangeValue = 0;
-                    else if (rangeValue < 0)
-                        rangeValue = rangeMax;
-                }
-            }
-            public int MaxValue
-            {
-                get { return rangeMax; }
-                set { rangeMax = value; }
-            }
-            public IntRange(int value, int valueMax)
-            {
-                rangeValue = value;
-                rangeMax = valueMax;
-            }
-        }
         static void Main(string[] args)
         {
             bool playing = true;
@@ -47,16 +20,17 @@ namespace FilmRegister
             string text = " Title, Genre, Rating, Length, Seen, [Done]";
             string[] textSplit = text.Split(",");
 
-            int currentMenu = 0;
             Menu[] menus = new Menu[2];//Define how many menus there are.
+            IntRange currentMenu = new IntRange(0, menus.Length);
             menus[0] = new Menu(true, true);
-            menus[1] = new Menu(false, false);
+            menus[1] = new Menu(false);
 
-            menus[0].AddMenuItem("Title", spacingTitle);
-            menus[0].AddMenuItem("Genre", spacingOther);
-            menus[0].AddMenuItem("Rating", spacingOther);
-            menus[0].AddMenuItem("Length", spacingOther);
-            menus[0].AddMenuItem("Seen", spacingOther);
+            ConsoleColor defaultColor = ConsoleColor.Yellow;
+            menus[0].AddMenuItem("Title", spacingTitle, defaultColor);
+            menus[0].AddMenuItem("Genre", spacingOther, defaultColor);
+            menus[0].AddMenuItem("Rating", spacingOther, defaultColor);
+            menus[0].AddMenuItem("Length", spacingOther, defaultColor);
+            menus[0].AddMenuItem("Seen", spacingOther, defaultColor);
 
             menus[1].AddMenuItem("Title");
             menus[1].AddMenuItem("Genre");
@@ -70,18 +44,18 @@ namespace FilmRegister
             ConsoleKey consoleKey;
             while (playing)
             {
-                Console.ForegroundColor = ConsoleColor.White;
+                //Console.ForegroundColor = ConsoleColor.White;
                 Console.CursorVisible = false;
                 Console.SetCursorPosition(0, 0);
                 Console.WriteLine("[1. Add] [2. Edit] [3. Remove]");
 
-                Console.ForegroundColor = ConsoleColor.Yellow;
+                //Console.ForegroundColor = ConsoleColor.Yellow;
 
                 Console.SetCursorPosition(0, 2);
-                string test = SetupCategories(menus[currentMenu].MenuItems);
-                Console.WriteLine(test);
+                SetupCategories(menus[currentMenu.Value].MenuItems);
+                //Console.WriteLine(test);
 
-                Console.ForegroundColor = ConsoleColor.White;
+                //Console.ForegroundColor = ConsoleColor.White;
 
                 for (int i = 0; i < movieList.Length; i++) //Write the full list of movies
                 {
@@ -102,7 +76,7 @@ namespace FilmRegister
                 if (consoleKey == ConsoleKey.D1)
                 {
                     Console.Clear();
-                    currentMenu = 1;
+                    currentMenu.Value = 1;
 
                     bool addingMovie = true;
                     selection.Value = 0;
@@ -113,7 +87,7 @@ namespace FilmRegister
                     double length = 0;
                     bool seen = false;
 
-                    selection.MaxValue = menus[currentMenu].Amount - 1;
+                    selection.MaxValue = menus[currentMenu.Value].Amount - 1;
                     string[] userInputs = new string[selection.MaxValue];//Used to store all keystrokes from corresponding selection
                     for (int i = 0; i < userInputs.Length; i++)
                     {
@@ -136,7 +110,7 @@ namespace FilmRegister
                         Console.SetCursorPosition(0, 10);
                         Console.Write(new string(' ', Console.WindowWidth));
                         bool tryParse = false;
-                        /*switch (selection.Value)//Depending on the current selection check for errors and display them in the console.
+                        switch (selection.Value)//Depending on the current selection check for errors and display them in the console.
                         {
                             case 0:
                                 inputsCorrect[selection.Value] = true;
@@ -151,15 +125,18 @@ namespace FilmRegister
                                 {
                                     Console.Write("Input numbers between 0-" + genres.Length);
                                     inputsCorrect[selection.Value] = false;
+                                    menus[currentMenu.Value].menuItems[selection.Value].Correct = false;
                                 }
                                 else if(testVariable > 0 && testVariable < genres.Length)
                                 {
                                     genre = genres[testVariable];
                                     inputsCorrect[selection.Value] = true;
+                                    menus[currentMenu.Value].menuItems[selection.Value].Correct = true;
                                 }
                                 else
                                 {
                                     inputsCorrect[selection.Value] = false;
+                                    menus[currentMenu.Value].menuItems[selection.Value].Correct = false;
                                 }
 
                                 break;
@@ -198,30 +175,17 @@ namespace FilmRegister
                                 break;
                             default:
                                 break;
-                        }*/
+                        }
                         Console.SetCursorPosition(0, 0);
-                        Console.WriteLine(SetupCategories(menus[currentMenu].menuItems));
-
-                        /*for (int i = 0; i < textSplit.Length - 1; i++)//Write all except the last menu item
-                        {
-                            Console.SetCursorPosition(0, i);
-                            if (inputsCorrect[i])
-                                Console.ForegroundColor = ConsoleColor.White;
-                            else
-                                Console.ForegroundColor = ConsoleColor.Red;
-
-                            Console.WriteLine(textSplit[i] + ":");
-                        }*/
-
+                        SetupCategories(menus[currentMenu.Value].menuItems);
 
                         allInputsCorrect = CheckBools(inputsCorrect);//Check if all inputs are correct
-                        if (allInputsCorrect)
+                        /*if (allInputsCorrect)
                             Console.ForegroundColor = ConsoleColor.Green;
                         else
                             Console.ForegroundColor = ConsoleColor.Red;
 
-                        //Console.WriteLine("\n" + textSplit[textSplit.Length - 1]);//Write last menu item which is special
-                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.ForegroundColor = ConsoleColor.White;*/
 
                         if (userInputs.Length > selection.Value)//Check if the array is longer than the selection to avoid index out of range, else just hide the cursor
                         {
@@ -277,32 +241,45 @@ namespace FilmRegister
                 }
             }
 
-            string SetupCategories(MenuItem[] menuItems)
+            void SetupCategories(MenuItem[] menuItems)
             {
-                StringBuilder sb = new StringBuilder();
+                
                 for (int i = 0; i < menuItems.Length; i++)
                 {
+                    StringBuilder sb = new StringBuilder();
                     MenuItem menuItem = menuItems[i];
+                    string text = "";
                     if (i == selection.Value)
                         menuItem.Select(true);
                     else
                         menuItem.Select(false);
 
-                    if (menus[currentMenu].Spacing)
+                    if (menus[currentMenu.Value].Spacing)
                         sb.AppendFormat("{0," + -menuItem.Spacing + "}", menuItem.Name);
                     else
                         sb.AppendFormat("{0}", menuItem.Name);
 
-                    if (!menus[currentMenu].Horizontal)
-                    {
+                    if (!menus[currentMenu.Value].Horizontal)
                         sb.Append("\n");
+
+                    if (!menuItem.Correct)
+                    {
+                        Console.ForegroundColor = menuItem.ErrorColor;
+                        Console.Write(sb.ToString());
                     }
+                    else
+                    {
+                        Console.ForegroundColor = menuItem.Color;
+                        Console.Write(sb.ToString());
+                    }
+
+                    Console.ForegroundColor = ConsoleColor.White;//Set the color to white again.
                 }
-                return sb.ToString();
             }
+
             void UpdateMenu(ConsoleKey consoleKey)//Takes input (the input depends on if the current menu is horizontal) and changes selection value which in term makes the menus update
             {
-                bool isHorizontal = menus[currentMenu].Horizontal;
+                bool isHorizontal = menus[currentMenu.Value].Horizontal;
                 if (isHorizontal)
                 {
                     if (consoleKey == ConsoleKey.RightArrow)
@@ -327,7 +304,8 @@ namespace FilmRegister
                 if (!bools[i])
                     return false;
             }
-            return true;        }
+            return true;        
+        }
 
         /// <summary>
         /// Reads and parses input from user. ÄNDRA. Displays error messages relevant to the error the user made. Returns parsed double.
