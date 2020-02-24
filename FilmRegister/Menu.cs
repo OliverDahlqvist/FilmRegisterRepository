@@ -4,7 +4,7 @@ using System.Text;
 
 namespace FilmRegister
 {
-    class MenuItem
+    public class MenuItem
     {
         private string name;
         private int spacing;
@@ -15,11 +15,6 @@ namespace FilmRegister
         private ConsoleColor errorColor;
         public ErrorProfile errorProfile;
 
-        public int intValue;
-        public string stringValue;
-        public Genres genreValue;
-        public bool boolValue;
-        public double doubleValue;
         public string Name
         {
             get { return name; }
@@ -51,9 +46,8 @@ namespace FilmRegister
         {
             get { return errorColor; }
         }
-        public MenuItem(string variable, string name, ConsoleColor color, ConsoleColor errorColor, int spacing, bool showCursor, ErrorProfile errorProfile)
+        public MenuItem(string name, ConsoleColor color, ConsoleColor errorColor, int spacing, bool showCursor, ErrorProfile errorProfile)
         {
-            stringValue = variable;
             this.name = name;
             this.spacing = spacing;
             this.showCursor = showCursor;
@@ -61,21 +55,15 @@ namespace FilmRegister
             this.errorColor = errorColor;
             this.errorProfile = errorProfile;
         }
-        public MenuItem(double variable, string name, ConsoleColor color, ConsoleColor errorColor, int spacing, bool showCursor, ErrorProfile errorProfile)
+        public MenuItem(int spacing = 14, bool showCursor = true)//If no error handling is required
         {
-            doubleValue = variable;
             this.name = name;
             this.spacing = spacing;
             this.showCursor = showCursor;
-            this.color = color;
-            this.errorColor = errorColor;
-            this.errorProfile = errorProfile;
         }
-        public MenuItem(string name, int spacing = 14, bool showCursor = true)
+        public string CheckError(string input)
         {
-            this.name = name;
-            this.spacing = spacing;
-            this.showCursor = showCursor;
+            return errorProfile.CheckError(this, input);
         }
 
         /// <summary>

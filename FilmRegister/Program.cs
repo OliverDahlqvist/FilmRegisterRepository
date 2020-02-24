@@ -1,34 +1,38 @@
 ﻿using System;
 using System.Text;
 using System.IO;
+using System.Collections.Generic;
 
 namespace FilmRegister
 {
-    public abstract class ErrorProfile
+    public class ErrorProfile
     {
-        public virtual bool CheckError(string input, out string output)
+        public virtual string CheckError(MenuItem menuItem, string input)
         {
-            Console.WriteLine("ERROR");
-            output = "Error";
-            return false;
+            return "Error";
         }
         public virtual bool CheckError(string input, out double output)
         {
             output = 0;
             return false;
         }
+        public virtual bool CheckError(string input, out Genres output)
+        {
+            output = default;
+            return false;
+        }
     }
     public class ErrorProfileTitle : ErrorProfile
     {
-        public override bool CheckError(string input, out string output)
+        public override string CheckError(MenuItem menuItem, string input)
         {
             if (input.Length > 0)
             {
-                output = input;
-                return true;
+                menuItem.Correct = true;
+                return input;
             }
-            output = "";
-            return false;
+            menuItem.Correct = false;
+            return "Error";
         }
     }
     public class ErrorProfileLength : ErrorProfile
@@ -36,17 +40,18 @@ namespace FilmRegister
         public override bool CheckError(string input, out double output)
         {
             int tempVariable = 0;
-            bool tryParse = int.TryParse(input, out temp Variable);
-
+            bool tryParse = int.TryParse(input, out tempVariable);
+            
             //tryParse = double.TryParse(input.Replace('.', ','), out output);
             
 
             Console.SetCursorPosition(0, 10);
             if (!tryParse && input.Length > 0)
                 Console.Write("Input numbers only");
-            else if (output > 10)
+            else if (tempVariable > 10)
                 Console.Write("Pick between 0-10");
 
+            output = tempVariable;
             return tryParse;
         }
     }
@@ -62,7 +67,7 @@ namespace FilmRegister
             bool playing = true;
             Movie[] movieList = new Movie[0];
             string savePath = "Filmer.txt";
-            LoadFile(savePath, movieList);
+            FileFunctions.LoadFile(savePath, movieList);
 
             int spacingTitle = 14;
             int spacingOther = 14;
@@ -84,9 +89,9 @@ namespace FilmRegister
 
             menus[1].AddMenuItem("Title", spacingMovies, errorProfile: new ErrorProfileTitle());
             menus[1].AddMenuItem("Genre", spacingMovies, errorProfile: new ErrorProfileLength());
-            menus[1].AddMenuItem("Rating", spacingMovies);
+            /*menus[1].AddMenuItem("Rating", spacingMovies);
             menus[1].AddMenuItem("Length", spacingMovies);
-            menus[1].AddMenuItem("Seen", spacingMovies);
+            menus[1].AddMenuItem("Seen", spacingMovies);*/
             menus[1].AddMenuItem("[Done]");
 
             IntRange selection = new IntRange(0, menus[0].menuItems.Length - 1);
@@ -145,14 +150,28 @@ namespace FilmRegister
                         allInputsCorrect = CheckBools(inputsCorrect);
                         bool tryParse = false;
                         MenuItem[] menuItems = menus[currentMenu.Value].menuItems;
-                        for (int i = 0; i < menuItems.Length; i++)
+
+                        /*for (int i = 0; i < menuItems.Length; i++)
                         {
                             if (i == selection.Value && menuItems[i].errorProfile != null)
                             {
-                                inputsCorrect[i] = menuItems[i].errorProfile.CheckError(userInputs[i]);
+                                //inputsCorrect[i] = menuItems[i].errorProfile.CheckError(userInputs[i]);
+                                
                                 menuItems[i].Correct = inputsCorrect[i];
                             }
-                        }
+                        }*/
+                        /*switch (selection.Value)
+                        {
+                            case 0:
+                                title = menuItems[selection.Value].CheckError(userInputs[selection.Value]);
+                                break;
+                            case 1:
+                                genre = menuItems[selection.Value].CheckError(userInputs[selection.Value]);
+                                break;
+                            default:
+                                break;
+                        }*/
+
 
                         /*switch (selection.Value)//Depending on the current selection check for errors and display them in the console.
                         {
@@ -271,7 +290,7 @@ namespace FilmRegister
                 }
                 else if (consoleKey == ConsoleKey.D2)
                 {
-                    SaveFile(savePath, movieList);
+                    FileFunctions.SaveFile(savePath, movieList);
                 }
             }
 
@@ -347,10 +366,6 @@ namespace FilmRegister
                     }
                 }
             }
-            /*void AssignValue(string input, out string output)
-            {
-                output = input;
-            }*/
         }
 
         public static bool CheckBools(bool[] bools)
@@ -362,7 +377,6 @@ namespace FilmRegister
             }
             return true;  
         }
-
         /// <summary>
         /// Reads and parses input from user. ÄNDRA. Displays error messages relevant to the error the user made. Returns parsed double.
         /// </summary>
@@ -430,10 +444,9 @@ namespace FilmRegister
             newList[0] = movieToAdd;
             return newList;
         }
-        /*public static Genres ParseGenres(string input, Genres[] genres)
-        {
-            
-        }*/
+    }
+    public static class FileFunctions
+    {
         public static void SaveFile(string filePath, Movie[] movies)
         {
             StreamWriter file = new StreamWriter(filePath);
