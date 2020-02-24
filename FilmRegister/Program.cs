@@ -1,24 +1,74 @@
 ﻿using System;
 using System.Text;
+using System.IO;
 
 namespace FilmRegister
 {
+    public abstract class ErrorProfile
+    {
+        public virtual bool CheckError(string input, out string output)
+        {
+            Console.WriteLine("ERROR");
+            output = "Error";
+            return false;
+        }
+        public virtual bool CheckError(string input, out double output)
+        {
+            output = 0;
+            return false;
+        }
+    }
+    public class ErrorProfileTitle : ErrorProfile
+    {
+        public override bool CheckError(string input, out string output)
+        {
+            if (input.Length > 0)
+            {
+                output = input;
+                return true;
+            }
+            output = "";
+            return false;
+        }
+    }
+    public class ErrorProfileLength : ErrorProfile
+    {
+        public override bool CheckError(string input, out double output)
+        {
+            int tempVariable = 0;
+            bool tryParse = int.TryParse(input, out temp Variable);
+
+            //tryParse = double.TryParse(input.Replace('.', ','), out output);
+            
+
+            Console.SetCursorPosition(0, 10);
+            if (!tryParse && input.Length > 0)
+                Console.Write("Input numbers only");
+            else if (output > 10)
+                Console.Write("Pick between 0-10");
+
+            return tryParse;
+        }
+    }
+    public static class Enums
+    {
+        public static Genres[] genres = (Genres[])Enum.GetValues(typeof(Genres));
+    }
     class Program
     {
         static void Main(string[] args)
         {
+
             bool playing = true;
             Movie[] movieList = new Movie[0];
-            int column = 0;
-            int columnMax = 1;
+            string savePath = "Filmer.txt";
+            LoadFile(savePath, movieList);
 
             int spacingTitle = 14;
             int spacingOther = 14;
+            int spacingMovies = 8;
 
-            Genres[] genres = (Genres[])Enum.GetValues(typeof(Genres));
-
-            string text = " Title, Genre, Rating, Length, Seen, [Done]";
-            string[] textSplit = text.Split(",");
+            Genres[] genres = Enums.genres;
 
             Menu[] menus = new Menu[2];//Define how many menus there are.
             IntRange currentMenu = new IntRange(0, menus.Length);
@@ -26,17 +76,17 @@ namespace FilmRegister
             menus[1] = new Menu(false);
 
             ConsoleColor defaultColor = ConsoleColor.Yellow;
-            menus[0].AddMenuItem("Title", spacingTitle, defaultColor);
-            menus[0].AddMenuItem("Genre", spacingOther, defaultColor);
-            menus[0].AddMenuItem("Rating", spacingOther, defaultColor);
-            menus[0].AddMenuItem("Length", spacingOther, defaultColor);
-            menus[0].AddMenuItem("Seen", spacingOther, defaultColor);
+            menus[0].AddMenuItem("Title", spacingTitle, defaultColor, defaultColor);
+            menus[0].AddMenuItem("Genre", spacingOther, defaultColor, defaultColor);
+            menus[0].AddMenuItem("Rating", spacingOther, defaultColor, defaultColor);
+            menus[0].AddMenuItem("Length", spacingOther, defaultColor, defaultColor);
+            menus[0].AddMenuItem("Seen", spacingOther, defaultColor, defaultColor);
 
-            menus[1].AddMenuItem("Title");
-            menus[1].AddMenuItem("Genre");
-            menus[1].AddMenuItem("Rating");
-            menus[1].AddMenuItem("Length");
-            menus[1].AddMenuItem("Seen");
+            menus[1].AddMenuItem("Title", spacingMovies, errorProfile: new ErrorProfileTitle());
+            menus[1].AddMenuItem("Genre", spacingMovies, errorProfile: new ErrorProfileLength());
+            menus[1].AddMenuItem("Rating", spacingMovies);
+            menus[1].AddMenuItem("Length", spacingMovies);
+            menus[1].AddMenuItem("Seen", spacingMovies);
             menus[1].AddMenuItem("[Done]");
 
             IntRange selection = new IntRange(0, menus[0].menuItems.Length - 1);
@@ -44,32 +94,15 @@ namespace FilmRegister
             ConsoleKey consoleKey;
             while (playing)
             {
-                //Console.ForegroundColor = ConsoleColor.White;
+                currentMenu.Value = 0;
                 Console.CursorVisible = false;
                 Console.SetCursorPosition(0, 0);
                 Console.WriteLine("[1. Add] [2. Edit] [3. Remove]");
 
-                //Console.ForegroundColor = ConsoleColor.Yellow;
-
                 Console.SetCursorPosition(0, 2);
                 SetupCategories(menus[currentMenu.Value].MenuItems);
-                //Console.WriteLine(test);
 
-                //Console.ForegroundColor = ConsoleColor.White;
-
-                for (int i = 0; i < movieList.Length; i++) //Write the full list of movies
-                {
-                    if (movieList[i] != null)
-                    {
-                        string movieSeen = "";
-                        if (movieList[i].seen)
-                        {
-                            movieSeen = "x";
-                        }
-                        Console.WriteLine(" {0," + -menus[0].menuItems[0].Spacing + "}" + "{1," + -menus[0].menuItems[1].Spacing + "}" + "{2," + -menus[0].menuItems[2].Spacing + "}" + "{3:0}h{4:00}m" + "{5}",
-                            movieList[i].title, movieList[i].genre, movieList[i].rating, movieList[i].length / 60, movieList[i].length % 60, movieSeen);
-                    }
-                }
+                DisplayMovies();
 
                 consoleKey = Console.ReadKey().Key;
                 UpdateMenu(consoleKey);
@@ -109,8 +142,19 @@ namespace FilmRegister
 
                         Console.SetCursorPosition(0, 10);
                         Console.Write(new string(' ', Console.WindowWidth));
+                        allInputsCorrect = CheckBools(inputsCorrect);
                         bool tryParse = false;
-                        switch (selection.Value)//Depending on the current selection check for errors and display them in the console.
+                        MenuItem[] menuItems = menus[currentMenu.Value].menuItems;
+                        for (int i = 0; i < menuItems.Length; i++)
+                        {
+                            if (i == selection.Value && menuItems[i].errorProfile != null)
+                            {
+                                inputsCorrect[i] = menuItems[i].errorProfile.CheckError(userInputs[i]);
+                                menuItems[i].Correct = inputsCorrect[i];
+                            }
+                        }
+
+                        /*switch (selection.Value)//Depending on the current selection check for errors and display them in the console.
                         {
                             case 0:
                                 inputsCorrect[selection.Value] = true;
@@ -138,7 +182,6 @@ namespace FilmRegister
                                     inputsCorrect[selection.Value] = false;
                                     menus[currentMenu.Value].menuItems[selection.Value].Correct = false;
                                 }
-
                                 break;
                             case 2:
                                 tryParse = double.TryParse(userInputs[selection.Value].Replace('.', ','), out rating);
@@ -146,16 +189,11 @@ namespace FilmRegister
                                 
                                 Console.SetCursorPosition(0, 10);
                                 if (!tryParse && userInputs[selection.Value].Length > 0)
-                                {
                                     Console.Write("Input numbers only");
-                                }
                                 else if (rating > 10)
-                                {
                                     Console.Write("Pick between 0-10");
-                                }
                                 break;
                             case 3:
-                                //length = TryParseDouble(userInputs[selection.Value], 0, 0, 0, 10);
                                 tryParse = double.TryParse(userInputs[selection.Value], out length);
                                 inputsCorrect[3] = tryParse;
                                 Console.SetCursorPosition(0, 10);
@@ -163,7 +201,6 @@ namespace FilmRegister
                                 {
                                     Console.Write("Input numbers only");
                                 }
-
                                 break;
                             case 4:
                                 if (userInputs[selection.Value].Length > 0 && userInputs[selection.Value][0] == 'y')
@@ -173,24 +210,20 @@ namespace FilmRegister
 
                                 inputsCorrect[selection.Value] = seen;
                                 break;
+                            case 5:
+                                break;
                             default:
                                 break;
-                        }
+                        }*/
                         Console.SetCursorPosition(0, 0);
                         SetupCategories(menus[currentMenu.Value].menuItems);
 
                         allInputsCorrect = CheckBools(inputsCorrect);//Check if all inputs are correct
-                        /*if (allInputsCorrect)
-                            Console.ForegroundColor = ConsoleColor.Green;
-                        else
-                            Console.ForegroundColor = ConsoleColor.Red;
-
-                        Console.ForegroundColor = ConsoleColor.White;*/
 
                         if (userInputs.Length > selection.Value)//Check if the array is longer than the selection to avoid index out of range, else just hide the cursor
                         {
                             Console.CursorVisible = true;
-                            Console.SetCursorPosition(textSplit[selection.Value].Length + 2 + userInputs[selection.Value].Length, selection.Value);
+                            Console.SetCursorPosition(menus[currentMenu.Value].menuItems[selection.Value].Spacing + userInputs[selection.Value].Length, selection.Value);
                         }
                         else
                         {
@@ -226,7 +259,8 @@ namespace FilmRegister
                             if (consoleKey == ConsoleKey.Backspace && userInputs[selection.Value].Length > 0)
                             {
                                 userInputs[selection.Value] = userInputs[selection.Value].Remove(userInputs[selection.Value].Length - 1);
-                                Console.SetCursorPosition(textSplit[selection.Value].Length + 2 + userInputs[selection.Value].Length, selection.Value);
+                                int spacing = 10;
+                                Console.SetCursorPosition(menus[currentMenu.Value].menuItems[selection.Value].Spacing + userInputs[selection.Value].Length, selection.Value);
                                 Console.Write(" ");
                             }
                             else if (consoleKey != ConsoleKey.Backspace)
@@ -237,7 +271,7 @@ namespace FilmRegister
                 }
                 else if (consoleKey == ConsoleKey.D2)
                 {
-
+                    SaveFile(savePath, movieList);
                 }
             }
 
@@ -259,7 +293,7 @@ namespace FilmRegister
                     else
                         sb.AppendFormat("{0}", menuItem.Name);
 
-                    if (!menus[currentMenu.Value].Horizontal)
+                    if (menus[currentMenu.Value].Horizontal == false || i == menuItems.Length - 1)
                         sb.Append("\n");
 
                     if (!menuItem.Correct)
@@ -295,6 +329,28 @@ namespace FilmRegister
                         selection.Value--;
                 }
             }
+
+            void DisplayMovies()
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                for (int i = 0; i < movieList.Length; i++) //Write the full list of movies
+                {
+                    if (movieList[i] != null)
+                    {
+                        string movieSeen = "";
+                        if (movieList[i].seen)
+                        {
+                            movieSeen = "x";
+                        }
+                        Console.WriteLine(" {0," + -menus[0].menuItems[0].Spacing + "}" + "{1," + -menus[0].menuItems[1].Spacing + "}" + "{2," + -menus[0].menuItems[2].Spacing + "}" + "{3:0}h{4:00}m" + "{5}",
+                            movieList[i].title, movieList[i].genre, movieList[i].rating, movieList[i].length / 60, movieList[i].length % 60, movieSeen);
+                    }
+                }
+            }
+            /*void AssignValue(string input, out string output)
+            {
+                output = input;
+            }*/
         }
 
         public static bool CheckBools(bool[] bools)
@@ -304,7 +360,7 @@ namespace FilmRegister
                 if (!bools[i])
                     return false;
             }
-            return true;        
+            return true;  
         }
 
         /// <summary>
@@ -373,6 +429,48 @@ namespace FilmRegister
             Movie[] newList = new Movie[1];//If the list is initially set to 0 length, create new list and add new movie, return the new list.
             newList[0] = movieToAdd;
             return newList;
+        }
+        /*public static Genres ParseGenres(string input, Genres[] genres)
+        {
+            
+        }*/
+        public static void SaveFile(string filePath, Movie[] movies)
+        {
+            StreamWriter file = new StreamWriter(filePath);
+            for (int i = 0; i < movies.Length; i++)
+            {
+                file.WriteLine(movies[i].title + " " + movies[i].genre + " " + movies[i].rating + " " + movies[i].length + " " + movies[i].seen);
+            }
+            file.Close();
+        }
+        public static void LoadFile(string filePath, Movie[] movies)
+        {
+            if (File.Exists(filePath))
+            {
+                StreamReader file = new StreamReader(filePath);
+                string line;
+                while ((line = file.ReadLine()) != null)
+                {
+                    string[] lines = line.Split(' ');
+
+                    string title;
+                    //string 
+
+
+
+                    /*Genres genre = Enums.genres[];
+                    double length;
+                    Movie newMovie = new Movie(lines[0, genre, ]);
+                    AddMovie(new Movie(lines[0], lines[1], lines[2], lines[3], lines[4]), movies)*/
+                }
+                file.Close();
+
+                Console.WriteLine("Loaded file");
+            }
+            else
+            {
+                File.Create(filePath);
+            }
         }
     }
 }

@@ -13,7 +13,13 @@ namespace FilmRegister
         private bool correct;
         private ConsoleColor color;
         private ConsoleColor errorColor;
+        public ErrorProfile errorProfile;
 
+        public int intValue;
+        public string stringValue;
+        public Genres genreValue;
+        public bool boolValue;
+        public double doubleValue;
         public string Name
         {
             get { return name; }
@@ -45,13 +51,25 @@ namespace FilmRegister
         {
             get { return errorColor; }
         }
-        public MenuItem(string name, ConsoleColor color, ConsoleColor errorColor, int spacing, bool showCursor)
+        public MenuItem(string variable, string name, ConsoleColor color, ConsoleColor errorColor, int spacing, bool showCursor, ErrorProfile errorProfile)
         {
+            stringValue = variable;
             this.name = name;
             this.spacing = spacing;
             this.showCursor = showCursor;
             this.color = color;
             this.errorColor = errorColor;
+            this.errorProfile = errorProfile;
+        }
+        public MenuItem(double variable, string name, ConsoleColor color, ConsoleColor errorColor, int spacing, bool showCursor, ErrorProfile errorProfile)
+        {
+            doubleValue = variable;
+            this.name = name;
+            this.spacing = spacing;
+            this.showCursor = showCursor;
+            this.color = color;
+            this.errorColor = errorColor;
+            this.errorProfile = errorProfile;
         }
         public MenuItem(string name, int spacing = 14, bool showCursor = true)
         {
@@ -91,15 +109,15 @@ namespace FilmRegister
                 this.spacing = true;
         }
 
-        public void AddMenuItem(string title, int spacing, ConsoleColor color = ConsoleColor.White, ConsoleColor errorColor = ConsoleColor.Red, bool showCursor = true)
+        public void AddMenuItem(string title, int spacing, ConsoleColor color = ConsoleColor.White, ConsoleColor errorColor = ConsoleColor.Red, bool showCursor = true, ErrorProfile errorProfile = null)
         {
-            MenuItem newItem = new MenuItem(" " + title, color, errorColor, spacing, showCursor);
+            MenuItem newItem = new MenuItem(" " + title, color, errorColor, spacing, showCursor, errorProfile);
             menuItems = AddItemToArray(newItem, menuItems);
             menuItemsAmount = menuItems.Length;
         }
-        public void AddMenuItem(string title, ConsoleColor color = ConsoleColor.White, ConsoleColor errorColor = ConsoleColor.Red, int spacing = 14, bool showCursor = true)
+        public void AddMenuItem(string title, ConsoleColor color = ConsoleColor.White, ConsoleColor errorColor = ConsoleColor.Red, int spacing = 14, bool showCursor = true, ErrorProfile errorProfile = null)
         {
-            MenuItem newItem = new MenuItem(" " + title, color, errorColor, spacing, showCursor);
+            MenuItem newItem = new MenuItem(" " + title, color, errorColor, spacing, showCursor, errorProfile);
             menuItems = AddItemToArray(newItem, menuItems);
             menuItemsAmount = menuItems.Length;
         }
