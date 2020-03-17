@@ -4,6 +4,7 @@ using System.Text;
 
 namespace FilmRegister
 {
+    public enum SortingTypes { None, Title, Genre, Rating, Length, Seen}
     public class MenuItem
     {
         private string name;
@@ -13,11 +14,14 @@ namespace FilmRegister
         private bool correct;
         private ConsoleColor color;
         private ConsoleColor errorColor;
+        private bool sorted;
+        private string suffix;
         public ErrorProfile errorProfile;
+        public SortingTypes sortingType;
 
         public string Name
         {
-            get { return name; }
+            get { return name + suffix; }
         }
         public int Spacing
         {
@@ -50,7 +54,12 @@ namespace FilmRegister
         {
             get { return showCursor; }
         }
-        public MenuItem(string name, ConsoleColor color, ConsoleColor errorColor, int spacing, bool showCursor, ErrorProfile errorProfile)
+        public bool Sorted
+        {
+            get { return sorted; }
+            set { sorted = value; }
+        }
+        public MenuItem(string name, ConsoleColor color, ConsoleColor errorColor, int spacing, bool showCursor, ErrorProfile errorProfile, SortingTypes sortingType)
         {
             this.name = name;
             this.spacing = spacing;
@@ -58,6 +67,7 @@ namespace FilmRegister
             this.color = color;
             this.errorColor = errorColor;
             this.errorProfile = errorProfile;
+            this.sortingType = sortingType;
         }
         public MenuItem(int spacing = 14, bool showCursor = true)//If no error handling is required
         {
@@ -78,7 +88,16 @@ namespace FilmRegister
             else
                 name = name.Replace('>', ' ');
         }
-
+        public void SetSorted(bool sort)
+        {
+            sorted = sort;
+            if (sorted && selected)
+                suffix = " ^";
+            else if (selected)
+                suffix = " v";
+            else
+                suffix = " ";
+        }
         public void SetSpacing(int newSpacing)
         {
             Spacing = newSpacing;
@@ -102,15 +121,15 @@ namespace FilmRegister
                 this.spacing = true;
         }
 
-        public void AddMenuItem(string title, int spacing, ConsoleColor color = ConsoleColor.White, ConsoleColor errorColor = ConsoleColor.Red, bool showCursor = true, ErrorProfile errorProfile = null)
+        public void AddMenuItem(string title, int spacing, ConsoleColor color = ConsoleColor.White, ConsoleColor errorColor = ConsoleColor.Red, bool showCursor = true, ErrorProfile errorProfile = null, SortingTypes sortingType = default)
         {
-            MenuItem newItem = new MenuItem(" " + title, color, errorColor, spacing, showCursor, errorProfile);
+            MenuItem newItem = new MenuItem(" " + title, color, errorColor, spacing, showCursor, errorProfile, sortingType);
             menuItems = AddItemToArray(newItem, menuItems);
             menuItemsAmount = menuItems.Length;
         }
-        public void AddMenuItem(string title, ConsoleColor color = ConsoleColor.White, ConsoleColor errorColor = ConsoleColor.Red, int spacing = 14, bool showCursor = true, ErrorProfile errorProfile = null)
+        public void AddMenuItem(string title, ConsoleColor color = ConsoleColor.White, ConsoleColor errorColor = ConsoleColor.Red, int spacing = 14, bool showCursor = true, ErrorProfile errorProfile = null, SortingTypes sortingType = default)
         {
-            MenuItem newItem = new MenuItem(" " + title, color, errorColor, spacing, showCursor, errorProfile);
+            MenuItem newItem = new MenuItem(" " + title, color, errorColor, spacing, showCursor, errorProfile, sortingType);
             menuItems = AddItemToArray(newItem, menuItems);
             menuItemsAmount = menuItems.Length;
         }
