@@ -483,7 +483,7 @@ namespace FilmRegister
             return true;
         }
     }
-    public static class FileFunctions
+    public static class FileFunctions // This class makes it possible to save to a file and load from it.
     {
         public static void SaveFile(string filePath, Movie[] movies)
         {
