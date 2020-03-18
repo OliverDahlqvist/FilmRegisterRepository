@@ -60,7 +60,7 @@ namespace FilmRegister
                 selection.MaxValue = menus[currentMenu.Value].Amount - 1;
                 Console.CursorVisible = false;
                 Console.SetCursorPosition(0, 0);
-                Console.WriteLine("[1. Add] [2. Edit] [3. Remove]");
+                Console.WriteLine("[1. Add] [Enter. Edit] [Delete. Remove]");
 
                 SetupMenus(menus[currentMenu.Value].MenuItems, 0, 2);
                 DisplayMovies(movieList);
@@ -74,10 +74,6 @@ namespace FilmRegister
                     selection.Value = 0;
                     selection.MaxValue = menus[currentMenu.Value].Amount - 1;
 
-                    string title = "";
-                    Genres genre = default;
-                    double length = 0;
-                    bool seen = false;
                     Object[] movieVariables = new Object[5];
 
                     string[] userInputs = new string[selection.MaxValue + 1];//Used to store all keystrokes from corresponding selection
@@ -177,6 +173,13 @@ namespace FilmRegister
                         menus[currentMenu.Value].menuItems[i].SetSorted(ratingSorted);
                     }
                 }
+                else if(consoleKey == ConsoleKey.Delete)
+                {
+                    if(selectionAlt.Value > 0)
+                    {
+                        movieList = HelpFunctions.RemoveMovie(selectionAlt.Value - 1, movieList);
+                    }
+                }
             }
             void SetupMenus(MenuItem[] menuItems, int left, int top)
             {
@@ -266,22 +269,25 @@ namespace FilmRegister
                     string s;
                     for (int i = 0; i < movieList.Length; i++)
                     {
-                        string prefix;
-                        if(selectionAlt.Value - 1 == i)
-                            prefix = ">";
-                        else
-                            prefix = " ";
-                        s = string.Format(prefix + "{0," + -menus[0].menuItems[0].Spacing + "}" + 
-                                        "{1," + -menus[0].menuItems[1].Spacing + "}" + 
-                                        "{2," + -menus[0].menuItems[2].Spacing + "}" + 
-                                        "{3:0}h{4:00}m", 
-                                        movieList[i].title, 
-                                        movieList[i].genre, 
-                                        movieList[i].rating, 
-                                        Math.Floor(movieList[i].length / 60), 
-                                        movieList[i].length % 60);
-                        s = s.PadRight(s.Length + 9) + (movieList[i].seen ? "x" : " ");
-                        Console.WriteLine(s);
+                        if (movieList[i] != null)
+                        {
+                            string prefix;
+                            if (selectionAlt.Value - 1 == i)
+                                prefix = ">";
+                            else
+                                prefix = " ";
+                            s = string.Format(prefix + "{0," + -menus[0].menuItems[0].Spacing + "}" +
+                                            "{1," + -menus[0].menuItems[1].Spacing + "}" +
+                                            "{2," + -menus[0].menuItems[2].Spacing + "}" +
+                                            "{3:0}h{4:00}m",
+                                            movieList[i].title,
+                                            movieList[i].genre,
+                                            movieList[i].rating,
+                                            Math.Floor(movieList[i].length / 60),
+                                            movieList[i].length % 60);
+                            s = s.PadRight(s.Length + 9) + (movieList[i].seen ? "x" : " ");
+                            Console.WriteLine(s);
+                        }
                     }
                 }
             }
@@ -317,6 +323,22 @@ namespace FilmRegister
             }
             Movie[] newList = new Movie[1];//If the list is initially set to 0 length, create new list and add new movie, return the new list.
             newList[0] = movieToAdd;
+            return newList;
+        }
+        public static Movie[] RemoveMovie(int index, Movie[] list)
+        {
+            Movie[] newList = new Movie[list.Length - 1];
+            if(list.Length > index)
+            {
+                for (int i = index; i < list.Length; i++)
+                {
+                    if ((i + 1) < list.Length) 
+                    {
+                        list[i] = list[i + 1];
+                    }
+                }
+
+            }
             return newList;
         }
         private static int Partition(Movie[] movies, MenuItem menuItem, int low, int high, bool ascending)
