@@ -4,6 +4,7 @@ using System.Text;
 
 namespace FilmRegister
 {
+    // This class limits the max value in the program.
     public class IntRange
     {
         private int rangeValue;

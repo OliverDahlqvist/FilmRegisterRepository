@@ -4,6 +4,7 @@ using System.Text;
 
 namespace FilmRegister
 {
+    // This class handles wrong input values and prevents the program to crash.
     public class ErrorProfile
     {
         public virtual bool CheckError(string input, out object results)
