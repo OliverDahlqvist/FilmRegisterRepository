@@ -31,7 +31,7 @@ namespace FilmRegister
             menus[0] = new Menu(true, true);
             menus[1] = new Menu(false);
 
-
+            
             ConsoleColor defaultColor = ConsoleColor.Yellow;
             menus[0].AddMenuItem("Title", spacingTitle, defaultColor, defaultColor, showCursor: false, sortingType: SortingTypes.Title);
             menus[0].AddMenuItem("Genre", spacingOther, defaultColor, defaultColor, showCursor: false, sortingType: SortingTypes.Genre);
@@ -67,7 +67,7 @@ namespace FilmRegister
 
                 consoleKey = Console.ReadKey().Key;
                 UpdateMenu(consoleKey);
-                if (consoleKey == ConsoleKey.D1)//Key 1 pressed
+                if (consoleKey == ConsoleKey.D1) //Key 1 pressed
                 {
                     Console.Clear();
                     currentMenu.Value = 1;
@@ -76,7 +76,12 @@ namespace FilmRegister
 
                     Object[] movieVariables = new Object[5];
 
-                    string[] userInputs = new string[selection.MaxValue + 1];//Used to store all keystrokes from corresponding selection
+
+                    selection.MaxValue = menus[currentMenu.Value].Amount - 1;
+                    string[] userInputs = new string[selection.MaxValue + 1]; //Used to store all keystrokes from corresponding selection
+
+                   
+
                     for (int i = 0; i < userInputs.Length; i++)
                     {
                         userInputs[i] = "";
@@ -91,7 +96,7 @@ namespace FilmRegister
                         Console.WriteLine(i + 1 + ": " + genres[i]);
                     }
 
-                    while (currentMenu.Value == 1)//While in adding movie menu
+                    while (currentMenu.Value == 1) //While in adding movie menu
                     {
                         Console.CursorVisible = false;
 
@@ -133,7 +138,10 @@ namespace FilmRegister
                                 Movie newMovie = new Movie((string)movieVariables[0], (Genres)movieVariables[1], (double)movieVariables[2], (double)movieVariables[3], (bool)movieVariables[4]);
                                 movieList = HelpFunctions.AddMovie(newMovie, movieList);
                                 int newSpacing = movieVariables[0].ToString().Length;
-                                if (newSpacing > menus[0].MenuItems[0].Spacing)//Check if the title of the movie is longer than current spacing value, if the title is longer set the spacing value to the title length + 2
+
+                                /*Check if the title of the movie is longer than current spacing value, 
+                                 if the title is longer set the spacing value to the title length + 2 */
+                                if (newSpacing > menus[0].MenuItems[0].Spacing)
                                 {
                                     menus[currentMenu.Value].menuItems[0].SetSpacing(newSpacing + 2);
                                 }
@@ -497,7 +505,7 @@ namespace FilmRegister
             return true;
         }
     }
-    public static class FileFunctions
+    public static class FileFunctions // This class makes it possible to save to a file and load from it.
     {
         public static void SaveFile(string filePath, Movie[] movies)
         {
