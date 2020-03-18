@@ -4,7 +4,7 @@ using System.Text;
 
 namespace FilmRegister
 {
-    public enum Genres { Action, Adventure, Animation, Biography, Crime, Drama, Horror, War, Scifi }
+    public enum Genres { Action, Adventure, Animation, Biography, Crime, Drama, Horror, War, SciFi }
     public class Movie
     {
         public string title;

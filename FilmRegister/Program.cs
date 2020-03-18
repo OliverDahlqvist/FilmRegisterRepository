@@ -72,6 +72,7 @@ namespace FilmRegister
                     Console.Clear();
                     currentMenu.Value = 1;
                     selection.Value = 0;
+                    selection.MaxValue = menus[currentMenu.Value].Amount - 1;
 
                     string title = "";
                     Genres genre = default;
@@ -79,7 +80,6 @@ namespace FilmRegister
                     bool seen = false;
                     Object[] movieVariables = new Object[5];
 
-                    selection.MaxValue = menus[currentMenu.Value].Amount - 1;
                     string[] userInputs = new string[selection.MaxValue + 1];//Used to store all keystrokes from corresponding selection
                     for (int i = 0; i < userInputs.Length; i++)
                     {
