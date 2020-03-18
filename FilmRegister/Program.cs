@@ -81,9 +81,12 @@ namespace FilmRegister
                     Object[] movieVariables = new Object[5];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                     selection.MaxValue = menus[currentMenu.Value].Amount - 1;
                     string[] userInputs = new string[selection.MaxValue + 1]; //Used to store all keystrokes from corresponding selection
 =======
+=======
+>>>>>>> 7b491e14f9962beb52e37374875e3d5c74e087ea
                     string[] userInputs = new string[selection.MaxValue + 1];//Used to store all keystrokes from corresponding selection
 >>>>>>> 7b491e14f9962beb52e37374875e3d5c74e087ea
                     for (int i = 0; i < userInputs.Length; i++)
