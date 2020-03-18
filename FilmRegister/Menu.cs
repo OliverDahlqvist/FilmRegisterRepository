@@ -5,6 +5,7 @@ using System.Text;
 namespace FilmRegister
 {
     public enum SortingTypes { None, Title, Genre, Rating, Length, Seen}
+    // This class includes everything ui related such as spacing, colours, menus etc.
     public class MenuItem
     {
         private string name;
