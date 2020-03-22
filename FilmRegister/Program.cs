@@ -86,7 +86,7 @@ namespace FilmRegister
                 if (consoleKey == ConsoleKey.D1 || (consoleKey == ConsoleKey.Enter && selectionAlt.Value > 0)) //Key 1 pressed
                 {
                     int movieIndex = 0;
-                    if (selectionAlt.Value > 0) //Check if movie is being edited
+                    if (selectionAlt.Value > 0 && consoleKey != ConsoleKey.D1) //Check if movie is being edited
                     {
                         editMovie = true;
                         movieIndex = selectionAlt.Value - 1;
