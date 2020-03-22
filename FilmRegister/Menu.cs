@@ -94,6 +94,9 @@ namespace FilmRegister
             else
                 name = name.Replace('>', ' ');
         }
+        /// <summary>
+        /// Changes suffix depending on sorted and ascending.
+        /// </summary>
         public void SetSorted()
         {
             if (selected)
@@ -110,6 +113,10 @@ namespace FilmRegister
                 suffix = " ";
             }
         }
+        /// <summary>
+        /// Sets new spacing
+        /// </summary>
+        /// <param name="newSpacing">New spacing</param>
         public void SetSpacing(int newSpacing)
         {
             Spacing = newSpacing;
@@ -132,7 +139,16 @@ namespace FilmRegister
             if(horizontal)
                 this.spacing = true;
         }
-
+        /// <summary>
+        /// Creates menu item and adds it to menu item array in the menu it was called from.
+        /// </summary>
+        /// <param name="title">Title</param>
+        /// <param name="spacing">Spacing</param>
+        /// <param name="color">Color when correct</param>
+        /// <param name="errorColor">Color when incorrect</param>
+        /// <param name="showCursor">Show cursor or not</param>
+        /// <param name="errorProfile">Error profile to check for errors</param>
+        /// <param name="sortingType">Sorting type used for sorting</param>
         public void AddMenuItem(string title, int spacing, ConsoleColor color = ConsoleColor.White, ConsoleColor errorColor = ConsoleColor.Red, bool showCursor = true, ErrorProfile errorProfile = null, SortingTypes sortingType = default)
         {
             MenuItem newItem = new MenuItem(" " + title, color, errorColor, spacing, showCursor, errorProfile, sortingType);
@@ -145,6 +161,12 @@ namespace FilmRegister
             menuItems = AddItemToArray(newItem, menuItems);
             menuItemsAmount = menuItems.Length;
         }
+        /// <summary>
+        /// Adds menu item to MenuItem array dynamically. Doesn't matter the size of the array initially.
+        /// </summary>
+        /// <param name="item">Item to add</param>
+        /// <param name="array">Array to add to</param>
+        /// <returns></returns>
         private MenuItem[] AddItemToArray(MenuItem item, MenuItem[] array)
         {
             if (array.Length > 0)

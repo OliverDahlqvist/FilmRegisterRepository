@@ -31,7 +31,11 @@ namespace FilmRegister
             rangeValue = value;
             rangeMax = valueMax;
         }
-
+        /// <summary>
+        /// Updates variables in class.
+        /// </summary>
+        /// <param name="value">New value</param>
+        /// <param name="valueMax">New max value</param>
         public void UpdateRange(int value, int valueMax)
         {
             rangeValue = value;

@@ -7,6 +7,14 @@ namespace FilmRegister
     // This class handles wrong input values and prevents the program to crash.
     public class ErrorProfile
     {
+        /// <summary>
+        /// Virtual class which is used as structure for inherited classes. Should be overridden.
+        /// </summary>
+        /// <param name="input">Input from user</param>
+        /// <param name="results">Out variable</param>
+        /// <param name="left">Left cursor position</param>
+        /// <param name="top">Right cursor position</param>
+        /// <returns></returns>
         public virtual bool CheckError(string input, out object results, int left, int top)
         {
             results = default;
@@ -89,9 +97,11 @@ namespace FilmRegister
     {
         public override bool CheckError(string input, out object results, int left, int top)
         {
+            Console.SetCursorPosition(left, top);
+            Console.Write("Input: Y/N");
             if (input.Length > 0)
             {
-                bool inputEquals = input[0] == 'y';
+                bool inputEquals = input[0] == 'y' || input[0] == 'Y';
                 results = inputEquals;
                 return true;
             }

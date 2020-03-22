@@ -19,25 +19,25 @@ namespace FilmRegister
             string savePath = "Filmer.txt";
 
             Movie[] movieList = new Movie[0];
+            Movie[] searchedMovies = new Movie[0];
 
-            int spacingTitle = 14;
+            int spacingTitle = 14;//Variables that dictates spacing between menu items
             int spacingOther = 14;
             int spacingMovies = 8;
 
             Genres[] genres = Enums.genres;
+            ConsoleColor defaultColor = ConsoleColor.Yellow;
 
-            Menu[] menus = new Menu[2];//Define how many menus there are.
+            Menu[] menus = new Menu[3];//Define how many menus there are.
             IntRange currentMenu = new IntRange(0, menus.Length);
             menus[0] = new Menu(true, true);
             menus[1] = new Menu(false);
 
-            
-            ConsoleColor defaultColor = ConsoleColor.Yellow;
-            menus[0].AddMenuItem("Title", spacingTitle, defaultColor, defaultColor, showCursor: false, sortingType: SortingTypes.Title);
-            menus[0].AddMenuItem("Genre", spacingOther, defaultColor, defaultColor, showCursor: false, sortingType: SortingTypes.Genre);
-            menus[0].AddMenuItem("Rating", spacingOther, defaultColor, defaultColor, showCursor: false, sortingType: SortingTypes.Rating);
-            menus[0].AddMenuItem("Length", spacingOther, defaultColor, defaultColor, showCursor: false, sortingType: SortingTypes.Length);
-            menus[0].AddMenuItem("Seen", spacingOther, defaultColor, defaultColor, showCursor: false, sortingType: SortingTypes.Seen);
+            menus[0].AddMenuItem("Title", spacingTitle, defaultColor, defaultColor, showCursor: true, sortingType: SortingTypes.Title);
+            menus[0].AddMenuItem("Genre", spacingOther, defaultColor, defaultColor, showCursor: true, sortingType: SortingTypes.Genre);
+            menus[0].AddMenuItem("Rating", spacingOther, defaultColor, defaultColor, showCursor: true, sortingType: SortingTypes.Rating);
+            menus[0].AddMenuItem("Length", spacingOther, defaultColor, defaultColor, showCursor: true, sortingType: SortingTypes.Length);
+            menus[0].AddMenuItem("Seen", spacingOther, defaultColor, defaultColor, showCursor: true, sortingType: SortingTypes.Seen);
 
             menus[1].AddMenuItem("Title", spacingMovies, errorProfile: new ErrorProfileTitle());
             menus[1].AddMenuItem("Genre", spacingMovies, errorProfile: new ErrorProfileGenre());
@@ -48,27 +48,33 @@ namespace FilmRegister
             menus[1].AddMenuItem("[Cancel]", showCursor: false);
 
             IntRange selection = new IntRange(0, menus[0].menuItems.Length - 1);
+            IntRange selectionAlt = new IntRange(0, movieList.Length);
             bool ratingSorted = false;
             bool editMovie = false;
 
             movieList = FileFunctions.LoadFile(savePath, movieList, menus[currentMenu.Value].menuItems[0]);
-            IntRange selectionAlt = new IntRange(0, movieList.Length);
-            
-
             ConsoleKey consoleKey;
+            ConsoleKeyInfo searchKeyInfo;
+
+            string headerText = "[1. Add] [Enter. Edit] [Delete. Remove] Search: ";
+            string searchString = "";
             while (playing)
             {
                 selection.MaxValue = menus[currentMenu.Value].Amount - 1;
                 selectionAlt.MaxValue = movieList.Length;
                 Console.SetCursorPosition(0, 0);
-                Console.WriteLine("[1. Add] [Enter. Edit] [Delete. Remove]");
+                Console.WriteLine(headerText + searchString);
 
                 SetupMenus(menus[currentMenu.Value].MenuItems, 0, 2);
-                DisplayMovies(movieList);
+                if(searchString.Length > 0)
+                    DisplayMovies(searchedMovies);
+                else
+                    DisplayMovies(movieList);
+                Console.SetCursorPosition(headerText.Length + searchString.Length, 0);
 
-                consoleKey = Console.ReadKey().Key;
+                searchKeyInfo = Console.ReadKey();
+                consoleKey = searchKeyInfo.Key;
                 UpdateMenu(consoleKey);
-
                 if (consoleKey == ConsoleKey.D1 || (consoleKey == ConsoleKey.Enter && selectionAlt.Value > 0)) //Key 1 pressed
                 {
                     int movieIndex = 0;
@@ -193,6 +199,25 @@ namespace FilmRegister
                 {
                     if(selectionAlt.Value > 0)
                         movieList = EssentialFunctions.RemoveMovie(selectionAlt.Value - 1, ref selectionAlt, movieList);
+                }
+                else//Search
+                {
+                    if (consoleKey == ConsoleKey.Backspace && searchString.Length > 0)
+                    {
+                        searchString = searchString.Remove(searchString.Length - 1);
+                        Console.SetCursorPosition(headerText.Length + searchString.Length, 0);
+                        Console.Write(" ");
+                    }
+                    else if(consoleKey != ConsoleKey.Backspace)
+                    {
+                        char inputKey = searchKeyInfo.KeyChar;
+                        searchString += inputKey;
+                        if (searchString.Length > 0)
+                        {
+                            
+                        }
+                    }
+                    searchedMovies = EssentialFunctions.Search(movieList, searchString);
                 }
             }
             void ChangeMenu(int menuIndex)//Changes the menu variables and clears the console.
@@ -453,10 +478,10 @@ namespace FilmRegister
                 switch (menuItem.sortingType)
                 {
                     case SortingTypes.Title:
-                        variableDifference = (ascending ? movies[j].title.CompareTo(pivotString) > 0 : movies[j].title.CompareTo(pivotString) < 0);
+                        variableDifference = (ascending ? movies[j].title.CompareTo(pivotString) < 0 : movies[j].title.CompareTo(pivotString) > 0);
                         break;
                     case SortingTypes.Genre:
-                        variableDifference = (ascending ? movies[j].genre.ToString().CompareTo(pivotString) > 0 : movies[j].genre.ToString().CompareTo(pivotString) < 0);
+                        variableDifference = (ascending ? movies[j].genre.ToString().CompareTo(pivotString) < 0 : movies[j].genre.ToString().CompareTo(pivotString) > 0);
                         break;
                     case SortingTypes.Rating:
                         variableDifference = (ascending ? movies[j].rating >= pivotDouble : movies[j].rating <= pivotDouble);
@@ -485,21 +510,39 @@ namespace FilmRegister
 
             return lowIndex + 1;
         }
+        /// <summary>
+        /// Repetitive function which sorts movie arrays depending on if they are previously sorted or not.
+        /// </summary>
+        /// <param name="movies">Movie array to sort</param>
+        /// <param name="menuItem"></param>
+        /// <param name="low"></param>
+        /// <param name="high"></param>
+        /// <param name="ascending"></param>
         public static void Sort(Movie[] movies, MenuItem menuItem, int low, int high, bool ascending)
         {
             if(low < high)
             {
-                switch (menuItem)
-                {
-                    default:
-                        break;
-                }
                 int partitionIndex = Partition(movies, menuItem, low, high, ascending);
                 Sort(movies, menuItem, low, partitionIndex - 1, ascending);
                 Sort(movies, menuItem, partitionIndex + 1, high, ascending);
             }
         }
 
+        public static Movie[] Search(Movie[] movies, string key)
+        {
+            StringBuilder sb = new StringBuilder();
+            Movie[] searchedMovies = new Movie[0];
+            for (int i = 0; i < movies.Length; i++)
+            {
+                if (movies[i].title.ToUpper().Contains(key.ToUpper()))
+                {
+                    searchedMovies = AddMovie(movies[i], searchedMovies);
+                }
+                
+            }
+            Console.Clear();
+            return searchedMovies;
+        }
         /// <summary>
         /// Tries to parse double within given min and max value, returns true if parse succeded and out double variable
         /// </summary>
