@@ -7,7 +7,7 @@ namespace FilmRegister
     // This class handles wrong input values and prevents the program to crash.
     public class ErrorProfile
     {
-        public virtual bool CheckError(string input, out object results)
+        public virtual bool CheckError(string input, out object results, int left, int top)
         {
             results = default;
             return false;
@@ -15,7 +15,7 @@ namespace FilmRegister
     }
     public class ErrorProfileTitle : ErrorProfile
     {
-        public override bool CheckError(string input, out object results)
+        public override bool CheckError(string input, out object results, int left, int top)
         {
             bool inputLength = input.Length > 0;
             if (inputLength)
@@ -27,7 +27,7 @@ namespace FilmRegister
     }
     public class ErrorProfileGenre : ErrorProfile
     {
-        public override bool CheckError(string input, out object results)
+        public override bool CheckError(string input, out object results, int left, int top)
         {
             int testVariable;
             bool tryParse = int.TryParse(input, out testVariable);
@@ -45,6 +45,7 @@ namespace FilmRegister
             else
             {
                 results = default;
+                Console.SetCursorPosition(left, top);
                 Console.Write("Input number 1-" + Enums.genres.Length);
                 return false;
             }
@@ -59,27 +60,34 @@ namespace FilmRegister
             this.min = min;
             this.max = max;
         }
-        public override bool CheckError(string input, out object results)
+        public override bool CheckError(string input, out object results, int left, int top)
         {
             double output;
-            bool returnBool = HelpFunctions.TryParseDouble(input, min, max, out output);
+            bool returnBool = EssentialFunctions.TryParseDouble(input, min, max, out output);
+            if (!returnBool && input.Length > 0)
+            {
+                Console.SetCursorPosition(left, top);
+                Console.Write("Input number between {0} - {1}", min, max);
+            }
             results = output;
             return returnBool;
         }
     }
     public class ErrorProfileLength : ErrorProfile
     {
-        public override bool CheckError(string input, out object results)
+        public override bool CheckError(string input, out object results, int left, int top)
         {
             double output;
-            bool returnBool = HelpFunctions.TryParseTime(input, out output);
+            bool returnBool = EssentialFunctions.TryParseTime(input, out output);
+            Console.SetCursorPosition(left, top);
+            Console.Write("Format: 2h30m");
             results = output;
             return returnBool;
         }
     }
     public class ErrorProfileSeen : ErrorProfile
     {
-        public override bool CheckError(string input, out object results)
+        public override bool CheckError(string input, out object results, int left, int top)
         {
             if (input.Length > 0)
             {

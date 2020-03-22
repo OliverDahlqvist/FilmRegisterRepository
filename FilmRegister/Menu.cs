@@ -16,6 +16,7 @@ namespace FilmRegister
         private ConsoleColor color;
         private ConsoleColor errorColor;
         private bool sorted;
+        private bool sortedAscending;
         private string suffix;
         public ErrorProfile errorProfile;
         public SortingTypes sortingType;
@@ -60,6 +61,10 @@ namespace FilmRegister
             get { return sorted; }
             set { sorted = value; }
         }
+        public bool SortedAscending
+        {
+            get { return sortedAscending; }
+        }
         public MenuItem(string name, ConsoleColor color, ConsoleColor errorColor, int spacing, bool showCursor, ErrorProfile errorProfile, SortingTypes sortingType)
         {
             this.name = name;
@@ -89,15 +94,21 @@ namespace FilmRegister
             else
                 name = name.Replace('>', ' ');
         }
-        public void SetSorted(bool sort)
+        public void SetSorted()
         {
-            sorted = sort;
-            if (sorted && selected)
-                suffix = " ^";
-            else if (selected)
-                suffix = " v";
+            if (selected)
+            {
+                sorted = true;
+                sortedAscending = !sortedAscending;
+                
+                suffix = (sortedAscending ? " ^" : " v");
+            }
             else
+            {
+                sorted = false;
+                sortedAscending = false;
                 suffix = " ";
+            }
         }
         public void SetSpacing(int newSpacing)
         {

@@ -31,5 +31,11 @@ namespace FilmRegister
             rangeValue = value;
             rangeMax = valueMax;
         }
+
+        public void UpdateRange(int value, int valueMax)
+        {
+            rangeValue = value;
+            rangeMax = valueMax;
+        }
     }
 }
