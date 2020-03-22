@@ -70,7 +70,7 @@ namespace FilmRegister
                 {
                     DisplayMovies(searchedMovies);
                     Console.SetCursorPosition(0, 5 + movieList.Length);
-                    for (int i = 5 + searchedMovies.Length; i < 5 + movieList.Length; i++)
+                    for (int i = 5 + searchedMovies.Length; i < 5 + movieList.Length; i++)//
                     {
                         Console.SetCursorPosition(0, i);
                         Console.Write(new string(' ', Console.WindowWidth));
@@ -92,7 +92,11 @@ namespace FilmRegister
                         movieIndex = selectionAlt.Value - 1;
                     }
                     ChangeMenu(1);
-                    Console.WriteLine("Editing movie");
+                    if(editMovie)
+                        Console.WriteLine("Edit movie");
+                    else
+                        Console.WriteLine("Add movie");
+
                     selection.MaxValue = menus[currentMenu.Value].Amount - 1;
                     selectionAlt.MaxValue = 0;
 
@@ -149,11 +153,13 @@ namespace FilmRegister
                                 if (editMovie)
                                 {
                                     movieList = EssentialFunctions.ReplaceMovie(movieIndex, newMovie, movieList);
+                                    FileFunctions.SaveFile(savePath, movieList);
                                     editMovie = false;
                                 }
                                 else
                                 {
                                     movieList = EssentialFunctions.AddMovie(newMovie, movieList);
+                                    FileFunctions.SaveFile(savePath, movieList);
                                 }
 
                                 int newSpacing = movieVariables[0].ToString().Length;
@@ -188,10 +194,6 @@ namespace FilmRegister
                         menus[currentMenu.Value].menuItems[index].Correct = input;
                     }
                 }
-                else if (consoleKey == ConsoleKey.D2)//Key 2 pressed
-                {
-                    FileFunctions.SaveFile(savePath, movieList);
-                }
                 else if(consoleKey == ConsoleKey.Enter)//Enter pressed
                 {
                     if(selectionAlt.Value == 0)//If the selection is on a menu item, Sort list
@@ -205,8 +207,11 @@ namespace FilmRegister
                 }
                 else if(consoleKey == ConsoleKey.Delete)//Delete pressed
                 {
-                    if(selectionAlt.Value > 0)
+                    if (selectionAlt.Value > 0)
+                    {
                         movieList = EssentialFunctions.RemoveMovie(selectionAlt.Value - 1, ref selectionAlt, movieList);
+                        FileFunctions.SaveFile(savePath, movieList);
+                    }
                 }
                 else//Search
                 {
