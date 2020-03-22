@@ -66,8 +66,16 @@ namespace FilmRegister
                 Console.WriteLine(headerText + searchString);
 
                 SetupMenus(menus[currentMenu.Value].MenuItems, 0, 2);
-                if(searchString.Length > 0)
+                if (searchString.Length > 0)
+                {
                     DisplayMovies(searchedMovies);
+                    Console.SetCursorPosition(0, 5 + movieList.Length);
+                    for (int i = 5 + searchedMovies.Length; i < 5 + movieList.Length; i++)
+                    {
+                        Console.SetCursorPosition(0, i);
+                        Console.Write(new string(' ', Console.WindowWidth));
+                    }
+                }
                 else
                     DisplayMovies(movieList);
                 Console.SetCursorPosition(headerText.Length + searchString.Length, 0);
@@ -211,13 +219,14 @@ namespace FilmRegister
                     else if(consoleKey != ConsoleKey.Backspace)
                     {
                         char inputKey = searchKeyInfo.KeyChar;
-                        searchString += inputKey;
-                        if (searchString.Length > 0)
-                        {
-                            
-                        }
+                        if(char.IsLetterOrDigit(inputKey) || consoleKey == ConsoleKey.Spacebar)
+                            searchString += inputKey;
+                        
                     }
-                    searchedMovies = EssentialFunctions.Search(movieList, searchString);
+                    if (searchString.Length > 0)
+                    {
+                        searchedMovies = EssentialFunctions.Search(movieList, searchString);
+                    }
                 }
             }
             void ChangeMenu(int menuIndex)//Changes the menu variables and clears the console.
@@ -527,10 +536,14 @@ namespace FilmRegister
                 Sort(movies, menuItem, partitionIndex + 1, high, ascending);
             }
         }
-
+        /// <summary>
+        /// Searches for string in movie array
+        /// </summary>
+        /// <param name="movies">Movie array</param>
+        /// <param name="key">Search key</param>
+        /// <returns>Movies with search term</returns>
         public static Movie[] Search(Movie[] movies, string key)
         {
-            StringBuilder sb = new StringBuilder();
             Movie[] searchedMovies = new Movie[0];
             for (int i = 0; i < movies.Length; i++)
             {
@@ -540,7 +553,6 @@ namespace FilmRegister
                 }
                 
             }
-            Console.Clear();
             return searchedMovies;
         }
         /// <summary>
